@@ -1,0 +1,3 @@
+/Users/wstygg/Desktop/Matt-daemon/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/wstygg/Desktop/Matt-daemon/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/wstygg/Desktop/Matt-daemon/cmake-build-debug/CMakeFiles/Matt_daemon.dir
