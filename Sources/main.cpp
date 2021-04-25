@@ -1,33 +1,33 @@
 #include <iostream>
-#include <spawn.h>
+#include <unistd.h>
+#include <setjmp.h>
 
 #include "Daemon.hpp"
-
-#define KEYWORD "daemon"
+#include "Tintin_reporter.hpp"
 
 using namespace std;
 
-void	ft_crash(const string &message) {
-	cerr << message << endl;
-	exit(1);
+static jmp_buf	env;
+
+void        ft_crash(const std::string &message) {
+	LOG(message, true);
+	longjmp(env, EXIT_FAILURE);
 }
 
-int	main(int argc, char *argv[], char *envp[]) {
-	pid_t pid;
+int	main() {
+//	if (geteuid() != 0)
+//		ft_crash("Program is have to run as root");
 
-	if (argc > 1 && strcmp(argv[1], "daemon") == 0) {
-		Daemon matt;
-		matt.loop();
-	} else {
-		char **new_argv = (char **) malloc(sizeof(char *) * argc + 2);
-		if (!new_argv)
-			ft_crash("new_argv malloc error");
-		new_argv[0] = strdup(argv[0]);
-		new_argv[1] = strdup(KEYWORD);
-		memcpy(new_argv + 2, argv + 1, sizeof(char *) * argc - 1);
-		new_argv[argc + 1] = nullptr;
-		if (posix_spawn(&pid, argv[0], nullptr, nullptr, new_argv, envp) != 0)
-			ft_crash("posix spawn error");
+	pid_t pid = fork();
+	if (pid < 0)
+		ft_crash("Fork error");
+	if (pid == 0) {
+		Daemon daemon;
+		int code = setjmp(env);
+		if (code == 0) {
+			daemon.loop();
+		} else
+			return (code);
 	}
 	exit(0);
 }
