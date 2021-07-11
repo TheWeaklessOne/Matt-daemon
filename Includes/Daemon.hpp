@@ -4,6 +4,8 @@
 #include <fstream>
 #include <iostream>
 
+void		ft_crash(const std::string& message);
+
 class Daemon {
 private:
 	int		_lock_fd;
@@ -12,7 +14,10 @@ private:
 public:
 	Daemon();
 	~Daemon();
+
 	void	loop();
+	void	init_lock_file();
+
 };
 
 #endif

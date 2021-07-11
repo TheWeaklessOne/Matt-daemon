@@ -6,11 +6,31 @@
 
 #define LOG Tintin_reporter::instance().log
 
-void       ft_crash(const std::string& message);
+void		ft_crash();
+void		ft_crash(const std::string& message);
+
+#define FOREACH_MESSAGE_TYPE(TYPE)	\
+	TYPE(INFO)						\
+	TYPE(SIGNAL)					\
+	TYPE(ERROR)						\
+	TYPE(USER_INPUT)				\
+	TYPE(MESSAGE_TYPES_N)			\
+
+#define GENERATE_ENUM(ENUM) ENUM,
+#define GENERATE_STRING(STRING) #STRING,
+
+enum message_type {
+	FOREACH_MESSAGE_TYPE(GENERATE_ENUM)
+};
+
+static const char *message_type_names[MESSAGE_TYPES_N + 1] = {
+	FOREACH_MESSAGE_TYPE(GENERATE_STRING)
+};
 
 class Tintin_reporter {
 private:
-	std::ofstream			_output;
+	std::ofstream	_output;
+	time_t			_time = std::time(nullptr);
 
 	Tintin_reporter();
 
@@ -21,7 +41,7 @@ public:
 	
 	static Tintin_reporter&	instance();
 	
-	void					log(const std::string& message, bool is_error = false);
+	void	log(const std::string& message, message_type type = INFO);
     
 };
 

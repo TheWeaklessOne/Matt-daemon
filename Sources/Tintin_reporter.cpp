@@ -1,14 +1,14 @@
 #include "Tintin_reporter.hpp"
 
-using namespace std;
-
 Tintin_reporter::Tintin_reporter() {
-    _output.exceptions(fstream::failbit | fstream::badbit);
-    const string path = "matt_daemon.log";
+	const std::string path = "matt_daemon.log";
+
+    _output.exceptions(std::fstream::failbit | std::fstream::badbit);
+	
     try {
-        _output.open(path, fstream::in | fstream::app);
+        _output.open(path, std::fstream::in | std::fstream::app);
     }
-    catch (const fstream::failure& e) {
+    catch (const std::fstream::failure& e) {
         ft_crash("Can't create log file at " + path + "\n" + "Exception: " + e.what());
     }
 }
@@ -23,18 +23,20 @@ Tintin_reporter& Tintin_reporter::instance() {
 	return reporter;
 }
 
-void	Tintin_reporter::log(const std::string& message, bool is_error) {
-	auto t = std::time(nullptr);
-	auto tm = *std::localtime(&t);
+void	Tintin_reporter::log(const std::string& message, message_type type) {
+	const auto tm = *std::localtime(&_time);
 
     try {
 		_output << std::put_time(&tm, "[%d/%m/%Y-%H:%M:%S] ");
-		if (is_error)
-			_output << "[ERROR] ";
-        _output << message << endl;
-		cout << message << endl;
+
+		_output << '[' + std::string(message_type_names[type]) + "] ";
+		std::cout << '[' + std::string(message_type_names[type]) + "] ";
+
+        _output << message << std::endl;
+
+		std::cout << message << std::endl;
     }
-    catch (const std::ofstream::failure &e) {
-		ft_crash("Write to log error\nException: " + string(e.what()));
+    catch (const std::ofstream::failure& e) {
+		ft_crash();
     }
 }
