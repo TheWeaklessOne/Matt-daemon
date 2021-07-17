@@ -3,18 +3,18 @@
 Tintin_reporter::Tintin_reporter() {
 	const std::string path = "matt_daemon.log";
 
-    _output.exceptions(std::fstream::failbit | std::fstream::badbit);
+	_output.exceptions(std::fstream::failbit | std::fstream::badbit);
 	
-    try {
-        _output.open(path, std::fstream::in | std::fstream::app);
-    }
-    catch (const std::fstream::failure& e) {
-        ft_crash("Can't create log file at " + path + "\n" + "Exception: " + e.what());
-    }
+	try {
+		_output.open(path, std::fstream::in | std::fstream::app);
+	}
+	catch (const std::fstream::failure& e) {
+		ft_crash();
+	}
 }
 
 Tintin_reporter::~Tintin_reporter() {
-    _output.close();
+	_output.close();
 }
 
 Tintin_reporter& Tintin_reporter::instance() {
@@ -23,20 +23,21 @@ Tintin_reporter& Tintin_reporter::instance() {
 	return reporter;
 }
 
-void	Tintin_reporter::log(const std::string& message, message_type type) {
+void	Tintin_reporter::log(const std::string& message, message_type type, std::__thread_id thread_id) {
 	const auto tm = *std::localtime(&_time);
 
-    try {
+	try {
 		_output << std::put_time(&tm, "[%d/%m/%Y-%H:%M:%S] ");
 
-		_output << '[' + std::string(message_type_names[type]) + "] ";
-		std::cout << '[' + std::string(message_type_names[type]) + "] ";
+		_output << '[' << message_type_names[type] << "] ";
 
-        _output << message << std::endl;
+		if (type == USER_INPUT) {
+			_output << '[' << thread_id << "] ";
+		}
 
-		std::cout << message << std::endl;
-    }
-    catch (const std::ofstream::failure& e) {
+		_output << message << std::endl;
+	}
+	catch (const std::ofstream::failure& e) {
 		ft_crash();
-    }
+	}
 }

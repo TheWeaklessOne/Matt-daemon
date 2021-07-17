@@ -16,27 +16,33 @@ void        ft_crash(const std::string& message) {
 	longjmp(env, EXIT_FAILURE);
 }
 
-void	exit(const std::string& message) {
+void		exit(const std::string& message) {
 	std::cerr << message << std::endl;
-	exit(EXIT_FAILURE);
+	longjmp(env, EXIT_FAILURE);
+}
+
+static void	daemonize() {
+	pid_t pid = fork();
+
+	if (pid < 0)
+		exit("Daemonize failed! (fork error)");
+	else if (pid > 0)
+		exit(EXIT_SUCCESS);
 }
 
 int	main() {
 //	if (geteuid() != 0)
 //		exit("Program is have to be run as root!");
-	
-	pid_t pid = fork();
-	if (pid < 0)
-		exit("Damonize failed! (fork error)");
 
-	if (pid == 0) {
-		Daemon daemon;
-		int code = setjmp(env);
-		if (code == 0) {
-			daemon.init_lock_file();
-			daemon.loop();
-		} else
-			return (code);
-	}
-	exit(EXIT_SUCCESS);
+	daemonize();
+
+	Daemon daemon;
+	int code = setjmp(env);
+	if (code == 0) {
+		daemon.init_lock_file();
+		daemon.loop();
+	} else
+		return (code);
+
+	return (EXIT_SUCCESS);
 }

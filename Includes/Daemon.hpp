@@ -4,7 +4,11 @@
 #include <fstream>
 #include <iostream>
 
+#define PORT 4242
+#define BUFFER_SIZE 128
+
 void		ft_crash(const std::string& message);
+void		exit(const std::string& message);
 
 class Daemon {
 private:
@@ -17,7 +21,6 @@ public:
 
 	void	loop();
 	void	init_lock_file();
-
 };
 
 #endif

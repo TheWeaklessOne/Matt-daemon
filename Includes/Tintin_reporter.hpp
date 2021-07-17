@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <thread>
 
 #define LOG Tintin_reporter::instance().log
 
@@ -41,7 +42,7 @@ public:
 	
 	static Tintin_reporter&	instance();
 	
-	void	log(const std::string& message, message_type type = INFO);
+	void	log(const std::string& message, message_type type = INFO, std::__thread_id thread_id = std::this_thread::get_id());
     
 };
 
