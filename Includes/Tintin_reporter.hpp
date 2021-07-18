@@ -2,8 +2,8 @@
 #define MATT_DAEMON_TINTIN_REPORTER_HPP
 
 #include <fstream>
-#include <iostream>
 #include <thread>
+#include <mutex>
 
 #define LOG Tintin_reporter::instance().log
 
@@ -15,6 +15,7 @@ void		ft_crash(const std::string& message);
 	TYPE(SIGNAL)					\
 	TYPE(ERROR)						\
 	TYPE(USER_INPUT)				\
+	TYPE(USER_ACTION)				\
 	TYPE(MESSAGE_TYPES_N)			\
 
 #define GENERATE_ENUM(ENUM) ENUM,
@@ -32,18 +33,22 @@ class Tintin_reporter {
 private:
 	std::ofstream	_output;
 	time_t			_time = std::time(nullptr);
+	std::mutex		_file_mutex;
+	std::mutex		_write_mutex;
 
 	Tintin_reporter();
+	~Tintin_reporter();
+
+	void	create_log_file();
 
 public:
-    ~Tintin_reporter();
-    Tintin_reporter(const Tintin_reporter& other) = delete;
-    void operator=(const Tintin_reporter&) = delete;
+	Tintin_reporter(const Tintin_reporter& other) = delete;
+	void operator=(const Tintin_reporter&) = delete;
 	
 	static Tintin_reporter&	instance();
 	
-	void	log(const std::string& message, message_type type = INFO, std::__thread_id thread_id = std::this_thread::get_id());
-    
+	void	log(const std::string& message, message_type type = INFO);
+	void	clear_log();
 };
 
 #endif

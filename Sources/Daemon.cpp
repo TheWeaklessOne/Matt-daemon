@@ -1,18 +1,14 @@
 #include <csignal>
 #include <sys/file.h>
-#include <fcntl.h>
 #include <errno.h>
 #include <unistd.h>
-#include <sys/socket.h>
-#include <sys/un.h>
 #include <netinet/in.h>
-#include <arpa/inet.h>
 #include <thread>
 
 #include "Daemon.hpp"
 #include "Tintin_reporter.hpp"
 
-static const std::string lock_path = "matt_daemon.lock";
+static const std::string lock_path = "/Users/wstygg/Desktop/Matt-daemon/matt_daemon.lock";
 
 static void	ft_signal(int sig_no) {
 	std::string sig_name = "sig" + std::string(sys_signame[sig_no]);
@@ -23,7 +19,8 @@ static void	ft_signal(int sig_no) {
 }
 
 Daemon::Daemon() {
-	LOG("Matt_daemon started");
+	LOG("Matt_daemon started at PID: " + std::to_string(getpid()));
+
 	for (int i = 0; i < NSIG; ++i)
 		signal(i, ft_signal);
 }
@@ -33,12 +30,20 @@ Daemon::~Daemon() {
 		close(_lock_fd);
 
 	if (_remove_lock) {
+		flock(_lock_fd, LOCK_UN);
+
 		if (remove(lock_path.c_str()) == 0)
 			LOG("Lock file is removed");
 		else
 			LOG("Can't remove lock file", ERROR);
 	}
 
+	if (_remove_socket) {
+		if (close(_socket) == 0)
+			LOG("Socket is closed");
+		else
+			LOG("Can't close socket", ERROR);
+	}
 	LOG("Matt_daemon is closed");
 }
 
@@ -46,7 +51,7 @@ void		Daemon::init_lock_file() {
 	_lock_fd = open(lock_path.c_str(), O_CREAT, 0664);
 
 	if (_lock_fd == -1)
-		ft_crash("Can't open|create lock file at " + lock_path + ".\nError: " + strerror(errno));
+		ft_crash("Can't open|create lock file at " + lock_path + ".\n\tError: " + strerror(errno));
 
 	if (flock(_lock_fd, LOCK_EX | LOCK_NB) == -1)
 		ft_crash("Lock file at " + lock_path + " is alredy locked");
@@ -54,34 +59,22 @@ void		Daemon::init_lock_file() {
 	_remove_lock = true;
 }
 
-static void	check_user_input(const std::string& input) {
-	std::string capitalized = input;
-	std::transform(capitalized.begin(), capitalized.end(), capitalized.begin(), ::toupper);
-
-	if (capitalized == "quit")
-		exit("Exit by quit command");
-}
-
-static void	start_thread(int fd, void* thread_address) {
-	const auto thread_id = std::this_thread::get_id();
-
-	LOG("Thread started");
+static void	start_connection(int fd) {
+	LOG("New connection started", USER_ACTION);
 
 	char buff[BUFFER_SIZE + 1];
-	while (true)
-	{
+	while (true) {
 		bzero(&buff, BUFFER_SIZE);
-		if (recv(fd, buff, BUFFER_SIZE, 0) > 0)
-		{
+		if (recv(fd, buff, BUFFER_SIZE, 0) > 0) {
 			auto input = std::string(buff);
-			//			content.erase(std::remove(content.begin(), content.end(), '\n'), content.end());
-			LOG(input, USER_INPUT, thread_id);
+
+			input.erase(std::remove(input.begin(), input.end(), '\n'), input.end());
+			LOG(input, USER_INPUT);
 
 			check_user_input(input);
 		}
-		else
-		{
-			LOG("Client disconect");
+		else {
+			LOG("Connection closed", USER_ACTION);
 			break;
 		}
 	}
@@ -96,22 +89,23 @@ static int	listen_to_socket() {
 	_sockaddr.sin_port = htons(PORT);
 
 	if (::bind(_socket, (sockaddr*)&_sockaddr, sizeof(_sockaddr)) == -1)
-		ft_crash(std::string("Bind failure") + ".\nError: " + strerror(errno));
+		ft_crash(std::string("Bind failure") + ".\n\tError: " + strerror(errno));
 
 	if (listen(_socket, 3) == -1)
-		ft_crash(std::string("Listen to socket error") + ".\nError: " + strerror(errno));
+		ft_crash(std::string("Listen to socket error") + ".\n\tError: " + strerror(errno));
 
 	return _socket;
 }
 
 void Daemon::loop() {
-	auto		_socket = listen_to_socket();
 	sockaddr_in	addr;
 	int			fd;
 
+	_socket = listen_to_socket();
+	_remove_lock = true;
+
 	socklen_t lenght = sizeof(addr);
-	while (true)
-	{
+	while (true) {
 		fd = accept(_socket, (sockaddr *)&addr, &lenght);
 
 		if (fd == -1) {
@@ -119,7 +113,7 @@ void Daemon::loop() {
 			continue;
 		}
 
-		auto thread = std::thread(start_thread, fd);
+		auto thread = std::thread(start_connection, fd);
 		thread.detach();
 	}
 }

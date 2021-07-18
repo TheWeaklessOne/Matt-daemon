@@ -1,56 +1,26 @@
-[17/07/2021-15:04:03] [INFO] Matt_daemon started
-[17/07/2021-15:04:03] [INFO] Thread started
-[17/07/2021-15:04:03] [USER_INPUT] sdfsdf
-[17/07/2021-15:04:03] [USER_INPUT] fdgldfklgdfg
-[17/07/2021-15:04:03] [USER_INPUT] dfgdafgdsfg
-[17/07/2021-15:04:03] [USER_INPUT] dsfgsdfgsdfg
-[17/07/2021-15:04:03] [USER_INPUT] fff
-[17/07/2021-15:04:03] [USER_INPUT] ffff
-[17/07/2021-15:04:03] [USER_INPUT] exit
-[17/07/2021-15:04:03] [USER_INPUT] exit
-[17/07/2021-15:04:03] [USER_INPUT] exit
-[17/07/2021-15:04:03] [INFO] exiting
-[17/07/2021-15:09:18] [INFO] Matt_daemon started
-[17/07/2021-15:09:18] [INFO] Thread started
-[17/07/2021-15:09:18] [USER_INPUT] privet
-[17/07/2021-15:09:18] [USER_INPUT] Drug
-[17/07/2021-15:09:18] [USER_INPUT] Sosi pisu
-[17/07/2021-15:09:18] [USER_INPUT] Hehee
-[17/07/2021-15:09:18] [USER_INPUT] hehehehehhe
-[17/07/2021-15:09:18] [INFO] exiting
-[17/07/2021-16:22:34] [INFO] Matt_daemon started
-[17/07/2021-16:22:34] [INFO] Thread started
-[17/07/2021-16:22:34] [USER_INPUT] privet
-
-[17/07/2021-16:22:34] [USER_INPUT] kak dela?
-
-[17/07/2021-16:22:34] [USER_INPUT] quit
-
-[17/07/2021-16:22:34] [INFO] Client disconect
-[17/07/2021-16:30:28] [INFO] Matt_daemon started
-[17/07/2021-16:30:28] [ERROR] Lock file at matt_daemon.lock is alredy locked
-[17/07/2021-16:30:28] [INFO] Matt_daemon is closed
-[17/07/2021-16:22:34] [INFO] Thread started
-[17/07/2021-16:22:34] [USER_INPUT] privet
-
-[17/07/2021-16:22:34] [USER_INPUT] kak dela
-
-[17/07/2021-16:22:34] [USER_INPUT] poka
-
-[17/07/2021-16:22:34] [USER_INPUT] ya tut
-
-[17/07/2021-16:22:34] [USER_INPUT] suck it bitch
-
-[17/07/2021-16:22:34] [USER_INPUT] quit
-
-[17/07/2021-16:22:34] [USER_INPUT] sdfsdf
-
-[17/07/2021-16:22:34] [USER_INPUT] asdf
-
-[17/07/2021-16:22:34] [USER_INPUT] sdf
-
-[17/07/2021-16:22:34] [USER_INPUT] asdf
-
-[17/07/2021-16:22:34] [USER_INPUT] sadf
-
-[17/07/2021-16:22:34] [INFO] Client disconect
+[18/07/2021-17:28:49] [INFO]	Matt_daemon started at PID: 28276
+[18/07/2021-17:28:49] [ERROR]	[0x10ccdf5c0] Bind failure.
+	Error: Address already in use
+[18/07/2021-17:28:49] [INFO]	Lock file is removed
+[18/07/2021-17:28:49] [ERROR]	[0x10ccdf5c0] Can't close socket
+[18/07/2021-17:28:49] [INFO]	Matt_daemon is closed
+[18/07/2021-17:34:01] [INFO]	Matt_daemon started at PID: 32175
+[18/07/2021-17:34:01] [ERROR]	[0x112a0c5c0] Bind failure.
+	Error: Address already in use
+[18/07/2021-17:34:01] [INFO]	Lock file is removed
+[18/07/2021-17:34:01] [INFO]	Matt_daemon is closed
+[18/07/2021-17:34:15] [INFO]	Matt_daemon started at PID: 32323
+[18/07/2021-17:34:15] [ERROR]	[0x10a06a5c0] Bind failure.
+	Error: Address already in use
+[18/07/2021-17:34:15] [INFO]	Lock file is removed
+[18/07/2021-17:34:15] [INFO]	Matt_daemon is closed
+[18/07/2021-17:34:28] [INFO]	Matt_daemon started at PID: 32483
+[18/07/2021-17:34:28] [ERROR]	[0x10cff55c0] Bind failure.
+	Error: Address already in use
+[18/07/2021-17:34:28] [INFO]	Lock file is removed
+[18/07/2021-17:34:28] [INFO]	Matt_daemon is closed
+[18/07/2021-17:34:34] [INFO]	Matt_daemon started at PID: 32617
+[18/07/2021-17:34:34] [ERROR]	[0x10bfa35c0] Bind failure.
+	Error: Address already in use
+[18/07/2021-17:34:34] [INFO]	Lock file is removed
+[18/07/2021-17:34:34] [INFO]	Matt_daemon is closed

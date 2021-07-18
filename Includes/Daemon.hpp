@@ -8,16 +8,22 @@
 #define BUFFER_SIZE 128
 
 void		ft_crash(const std::string& message);
-void		exit(const std::string& message);
+void		check_user_input(const std::string& input);
 
 class Daemon {
 private:
 	int		_lock_fd;
 	bool	_remove_lock = false;
+	bool	_remove_socket = false;
+	int		_socket;
+
+	void	check_user_input();
 	
 public:
 	Daemon();
 	~Daemon();
+	Daemon(const Daemon& other) = delete;
+	void operator=(const Daemon&) = delete;
 
 	void	loop();
 	void	init_lock_file();

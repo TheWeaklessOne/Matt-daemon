@@ -1,5 +1,5 @@
-#include <iostream>
 #include <unistd.h>
+#include <sys/stat.h>
 #include <setjmp.h>
 
 #include "Daemon.hpp"
@@ -16,23 +16,33 @@ void        ft_crash(const std::string& message) {
 	longjmp(env, EXIT_FAILURE);
 }
 
-void		exit(const std::string& message) {
-	std::cerr << message << std::endl;
-	longjmp(env, EXIT_FAILURE);
-}
-
 static void	daemonize() {
 	pid_t pid = fork();
-
 	if (pid < 0)
-		exit("Daemonize failed! (fork error)");
+		exit(EXIT_FAILURE);
 	else if (pid > 0)
 		exit(EXIT_SUCCESS);
+
+	if (setsid() == -1)
+		exit(EXIT_FAILURE);
+
+	pid = fork();
+	if (pid < 0)
+		exit(EXIT_FAILURE);
+	else if (pid > 0)
+		exit(EXIT_SUCCESS);
+
+	umask(0);
+
+	chdir("/");
+
+	for (auto x = sysconf(_SC_OPEN_MAX); x >=0; --x)
+		close((int)x);
 }
 
 int	main() {
-//	if (geteuid() != 0)
-//		exit("Program is have to be run as root!");
+	//	if (geteuid() != 0)
+	//		exit("Program is have to be run as root!");
 
 	daemonize();
 

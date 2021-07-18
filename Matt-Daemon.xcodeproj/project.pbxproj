@@ -10,6 +10,8 @@
 		784890D025F64287003432AC /* Daemon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 784890C925F64287003432AC /* Daemon.cpp */; };
 		784890D125F64287003432AC /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 784890CA25F64287003432AC /* main.cpp */; };
 		784890D225F64287003432AC /* Tintin_reporter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 784890CB25F64287003432AC /* Tintin_reporter.cpp */; };
+		78C5A48226A44D650071BBF6 /* Check_user_input.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 78C5A48126A44D650071BBF6 /* Check_user_input.cpp */; };
+		78C5A48626A46A0C0071BBF6 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 78C5A48526A46A0C0071BBF6 /* Makefile */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -31,6 +33,8 @@
 		784890CB25F64287003432AC /* Tintin_reporter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Tintin_reporter.cpp; sourceTree = "<group>"; usesTabs = 1; };
 		784890CE25F64287003432AC /* Daemon.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Daemon.hpp; sourceTree = "<group>"; usesTabs = 1; };
 		784890CF25F64287003432AC /* Tintin_reporter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Tintin_reporter.hpp; sourceTree = "<group>"; usesTabs = 1; };
+		78C5A48126A44D650071BBF6 /* Check_user_input.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Check_user_input.cpp; sourceTree = "<group>"; usesTabs = 1; };
+		78C5A48526A46A0C0071BBF6 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,6 +54,7 @@
 				784890CD25F64287003432AC /* Includes */,
 				784890C825F64287003432AC /* Sources */,
 				784890BE25F64231003432AC /* Products */,
+				78C5A48526A46A0C0071BBF6 /* Makefile */,
 			);
 			sourceTree = "<group>";
 		};
@@ -65,6 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				784890C925F64287003432AC /* Daemon.cpp */,
+				78C5A48126A44D650071BBF6 /* Check_user_input.cpp */,
 				784890CA25F64287003432AC /* main.cpp */,
 				784890CB25F64287003432AC /* Tintin_reporter.cpp */,
 			);
@@ -137,8 +143,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				78C5A48626A46A0C0071BBF6 /* Makefile in Sources */,
 				784890D125F64287003432AC /* main.cpp in Sources */,
 				784890D225F64287003432AC /* Tintin_reporter.cpp in Sources */,
+				78C5A48226A44D650071BBF6 /* Check_user_input.cpp in Sources */,
 				784890D025F64287003432AC /* Daemon.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
