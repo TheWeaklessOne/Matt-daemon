@@ -10,16 +10,17 @@
 
 void		ft_crash(const std::string& message);
 void		check_user_input(const std::string& input);
+bool		is_file_exists(const std::string& message);
+
+static const std::string	lock_dir = "/var/lock/";
+static const std::string	lock_path = lock_dir + "matt_daemon.lock";
 
 class Daemon {
 private:
 	int		_lock_fd;
 	bool	_remove_lock = false;
-	bool	_remove_socket = false;
 	int		_socket;
 	int		_listeners_count = 0;
-
-	void	check_user_input();
 	
 public:
 	Daemon();

@@ -9,6 +9,7 @@
 
 void		ft_crash();
 void		ft_crash(const std::string& message);
+bool		is_file_exists(const std::string& message);
 
 #define FOREACH_MESSAGE_TYPE(TYPE)	\
 	TYPE(INFO)						\
@@ -28,6 +29,9 @@ enum message_type {
 static const char *message_type_names[MESSAGE_TYPES_N + 1] = {
 	FOREACH_MESSAGE_TYPE(GENERATE_STRING)
 };
+
+static const std::string log_dir = "/var/log/matt_daemon/";
+static const std::string log_path = log_dir + "matt_daemon.log";
 
 class Tintin_reporter {
 private:

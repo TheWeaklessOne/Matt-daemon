@@ -7,6 +7,12 @@
 
 static jmp_buf	env;
 
+bool		is_file_exists(const std::string& path) {
+	static struct stat buffer;
+
+	return (stat(path.c_str(), &buffer) == 0);
+}
+
 void		ft_crash() {
 	longjmp(env, EXIT_FAILURE);
 }
@@ -36,14 +42,21 @@ static void	daemonize() {
 
 	chdir("/");
 
-	//	close(STDIN_FILENO);
-	//	close(STDOUT_FILENO);
-	//	close(STDERR_FILENO);
+	close(STDIN_FILENO);
+	close(STDOUT_FILENO);
+	close(STDERR_FILENO);
 }
 
 int	main() {
-	//	if (geteuid() != 0)
-	//		exit("Program is have to be run as root!");
+	if (geteuid() != 0) {
+		std::cerr << "Program is have to be run as root!" << std::endl;
+		exit(EXIT_FAILURE);
+	}
+
+	if (is_file_exists(lock_path)) {
+		std::cerr << "The program cannot be run in more than one instance!" << std::endl;
+		exit(EXIT_FAILURE);
+	}
 
 	daemonize();
 

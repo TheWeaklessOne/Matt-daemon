@@ -4,11 +4,10 @@
 #include <unistd.h>
 #include <netinet/in.h>
 #include <thread>
+#include <sys/stat.h>
 
 #include "Daemon.hpp"
 #include "Tintin_reporter.hpp"
-
-static const std::string lock_path = "/Users/daniilteterin/Desktop/daemon/matt_daemon.lock";
 
 static void	ft_signal(int sig_no) {
 	std::string sig_name = "sig" + std::string(sys_signame[sig_no]);
@@ -42,6 +41,9 @@ Daemon::~Daemon() {
 }
 
 void		Daemon::init_lock_file() {
+	if (!is_file_exists(lock_dir))
+		mkdir(lock_dir.c_str(), 0);
+
 	_lock_fd = open(lock_path.c_str(), O_CREAT, 0664);
 
 	if (_lock_fd == -1)
@@ -103,7 +105,6 @@ void Daemon::loop() {
 	int			fd;
 
 	_socket = listen_to_socket();
-	_remove_socket = true;
 
 	socklen_t lenght = sizeof(addr);
 	while (true) {

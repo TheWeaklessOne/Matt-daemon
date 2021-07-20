@@ -1,7 +1,7 @@
 #include "Daemon.hpp"
 #include "Tintin_reporter.hpp"
 
-void check_user_input(const std::string& input) {
+void	check_user_input(const std::string& input) {
 	std::string capitalized = input;
 	std::transform(capitalized.begin(), capitalized.end(), capitalized.begin(), ::toupper);
 

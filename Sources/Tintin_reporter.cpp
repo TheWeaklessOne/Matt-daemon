@@ -1,8 +1,5 @@
 #include "Tintin_reporter.hpp"
-
 #include <sys/stat.h>
-
-static const std::string log_path = "/Users/daniilteterin/Desktop/daemon/matt_daemon.log";
 
 Tintin_reporter::Tintin_reporter() {
 	create_log_file();
@@ -14,12 +11,16 @@ void	Tintin_reporter::create_log_file() {
 	if (_output.is_open())
 		_output.close();
 
+	if (!is_file_exists(log_dir))
+		if (mkdir(log_dir.c_str(), 0) == -1)
+			ft_crash();
+
 	_output.exceptions(std::fstream::failbit | std::fstream::badbit);
 
 	try {
 		_output.open(log_path.c_str(), std::fstream::in | std::fstream::app);
 	}
-	catch (const std::fstream::failure& e) {
+	catch (...) {
 		ft_crash();
 	}
 
@@ -37,20 +38,16 @@ Tintin_reporter& Tintin_reporter::instance() {
 	return reporter;
 }
 
-static bool		is_log_exists() {
-	static struct stat buffer;
-
-	return (stat(log_path.c_str(), &buffer) == 0);
-}
-
 void	Tintin_reporter::log(const std::string& message, message_type type) {
 	_write_mutex.lock();
 
 	const auto tm = *std::localtime(&_time);
 
-	if (!is_log_exists()) {
+	if (!is_file_exists(log_path)) {
 		create_log_file();
+		_write_mutex.unlock();
 		LOG("Seems like log_file was deleted, recreate");
+		_write_mutex.lock();
 	}
 
 	try {
@@ -77,12 +74,16 @@ void	Tintin_reporter::clear_log() {
 	if (_output.is_open())
 		_output.close();
 
+	if (!is_file_exists(log_dir))
+		if (mkdir(log_dir.c_str(), 0) == -1)
+			ft_crash();
+
 	_output.exceptions(std::fstream::failbit | std::fstream::badbit);
 
 	try {
 		_output.open(log_path.c_str(), std::fstream::in | std::fstream::trunc);
 	}
-	catch (const std::fstream::failure& e) {
+	catch (...) {
 		ft_crash();
 	}
 
