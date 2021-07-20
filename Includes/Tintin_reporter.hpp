@@ -6,6 +6,7 @@
 #include <mutex>
 
 #define LOG Tintin_reporter::instance().log
+#define MAX_LOG_SIZE 1024
 
 void		ft_crash();
 void		ft_crash(const std::string& message);

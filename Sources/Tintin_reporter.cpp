@@ -1,5 +1,7 @@
 #include "Tintin_reporter.hpp"
 #include <sys/stat.h>
+#include <filesystem>
+#include <sstream>
 
 Tintin_reporter::Tintin_reporter() {
 	create_log_file();
@@ -38,6 +40,28 @@ Tintin_reporter& Tintin_reporter::instance() {
 	return reporter;
 }
 
+
+static std::string	get_compressed_filename() {
+	static time_t	_time = std::time(nullptr);
+	const auto tm = *std::localtime(&_time);
+	std::stringstream stream;
+
+	stream << std::put_time(&tm, "%d.%m.%Y-%H:%M");
+	return stream.str() + ".log" + ".zip";
+}
+
+static bool	compress_log() {
+	auto size = std::__fs::filesystem::file_size(log_path);
+
+	if (size > MAX_LOG_SIZE) {
+		const auto compressed_filename = get_compressed_filename();
+		const auto system_string = "zip " + log_dir + compressed_filename + " " + log_path;
+		system(system_string.c_str());
+		return true;
+	}
+	return false;
+}
+
 void	Tintin_reporter::log(const std::string& message, message_type type) {
 	_write_mutex.lock();
 
@@ -47,6 +71,13 @@ void	Tintin_reporter::log(const std::string& message, message_type type) {
 		create_log_file();
 		_write_mutex.unlock();
 		LOG("Seems like log_file was deleted, recreate");
+		_write_mutex.lock();
+	}
+
+	if (compress_log()) {
+		clear_log();
+		_write_mutex.unlock();
+		LOG("File size was reached maximum size and was compressed as " + get_compressed_filename());
 		_write_mutex.lock();
 	}
 
