@@ -6,6 +6,7 @@
 
 #define PORT 4242
 #define BUFFER_SIZE 128
+#define MAX_LISTENERS_COUNT 3
 
 void		ft_crash(const std::string& message);
 void		check_user_input(const std::string& input);
@@ -16,6 +17,7 @@ private:
 	bool	_remove_lock = false;
 	bool	_remove_socket = false;
 	int		_socket;
+	int		_listeners_count = 0;
 
 	void	check_user_input();
 	

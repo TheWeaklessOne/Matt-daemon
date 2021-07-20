@@ -2,7 +2,7 @@
 
 #include <sys/stat.h>
 
-static const std::string log_path = "/Users/wstygg/Desktop/Matt-daemon/matt_daemon.log";
+static const std::string log_path = "/Users/daniilteterin/Desktop/daemon/matt_daemon.log";
 
 Tintin_reporter::Tintin_reporter() {
 	create_log_file();
@@ -58,7 +58,7 @@ void	Tintin_reporter::log(const std::string& message, message_type type) {
 
 		_output << '[' << message_type_names[type] << "]\t";
 
-		if (type & (USER_INPUT | USER_ACTION)) {
+		if (type == USER_INPUT || type == USER_ACTION) {
 			_output << '[' << std::this_thread::get_id() << "] ";
 		}
 

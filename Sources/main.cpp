@@ -11,7 +11,7 @@ void		ft_crash() {
 	longjmp(env, EXIT_FAILURE);
 }
 
-void        ft_crash(const std::string& message) {
+void		ft_crash(const std::string& message) {
 	LOG(message, ERROR);
 	longjmp(env, EXIT_FAILURE);
 }
@@ -36,8 +36,9 @@ static void	daemonize() {
 
 	chdir("/");
 
-	for (auto x = sysconf(_SC_OPEN_MAX); x >=0; --x)
-		close((int)x);
+	//	close(STDIN_FILENO);
+	//	close(STDOUT_FILENO);
+	//	close(STDERR_FILENO);
 }
 
 int	main() {
