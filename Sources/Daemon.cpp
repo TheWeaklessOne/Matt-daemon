@@ -1,16 +1,18 @@
 #include <csignal>
 #include <sys/file.h>
-#include <errno.h>
+#include <cerrno>
 #include <unistd.h>
 #include <netinet/in.h>
 #include <thread>
+#include <cstring>
 #include <sys/stat.h>
+#include <algorithm>
 
 #include "Daemon.hpp"
 #include "Tintin_reporter.hpp"
 
 static void	ft_signal(int sig_no) {
-	std::string sig_name = "sig" + std::string(sys_signame[sig_no]);
+	std::string sig_name = "sig" + std::string(sys_siglist[sig_no]);
 	std::transform(sig_name.begin(), sig_name.end(), sig_name.begin(), ::toupper);
 
 	LOG("Catch a signal: " + sig_name, SIGNAL);
@@ -100,7 +102,7 @@ static int	listen_to_socket() {
 	return _socket;
 }
 
-void Daemon::loop() {
+[[noreturn]] void Daemon::loop() {
 	sockaddr_in	addr;
 	int			fd;
 

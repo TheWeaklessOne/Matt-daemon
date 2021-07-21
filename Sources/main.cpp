@@ -1,6 +1,6 @@
 #include <unistd.h>
 #include <sys/stat.h>
-#include <setjmp.h>
+#include <csetjmp>
 
 #include "Daemon.hpp"
 #include "Tintin_reporter.hpp"
@@ -65,8 +65,7 @@ int	main() {
 	if (code == 0) {
 		daemon.init_lock_file();
 		daemon.loop();
-	} else
+	} else {
 		return (code);
-
-	return (EXIT_SUCCESS);
+	}
 }

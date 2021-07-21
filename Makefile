@@ -2,7 +2,7 @@ NAME		=	Matt_daemon
 
 CC			=	clang++
 
-FLAGS		=	-g -std=c++17
+FLAGS		=	-g -std=c++17 -pthread
 
 DELTA		=	$$(echo "$$(tput cols)-47"|bc)
 
@@ -22,13 +22,13 @@ NB			=	$(words $(SRC_BASE))
 INDEX		=	0
 
 all:
-	@make -j $(NAME)
+	@make -s -j $(NAME)
 
 $(NAME):	$(OBJ_DIR) $(OBJS)
 	@$(CC) $(OBJS) -o $(NAME)	\
 	-I $(INC_DIR)				\
 	$(LIBS)                 	\
-	$(FLAGS)
+	$(FLAGS) -lstdc++fs
 	@strip -x $@
 	@printf "\r\033[48;5;15;38;5;25m✅   MAKE $(NAME)\033[0m\033[K\n"
 

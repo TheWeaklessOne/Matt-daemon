@@ -1,3 +1,6 @@
+#include <algorithm>
+#include <unistd.h>
+
 #include "Daemon.hpp"
 #include "Tintin_reporter.hpp"
 
@@ -15,7 +18,13 @@ void	check_user_input(const std::string& input) {
 		std::string execute_string = input.substr(7);
 
 		LOG(std::string("Got a \"System\" command, execute string:\n") + execute_string, USER_ACTION);
-		system(execute_string.c_str());
+		
+		auto pid = fork();
+
+		if (pid == 0) {
+			system(execute_string.c_str());
+			exit(0);
+		}
 	} else if (capitalized == "CLEAR") {
 		Tintin_reporter::instance().clear_log();
 		LOG("Log file was cleared", USER_ACTION);

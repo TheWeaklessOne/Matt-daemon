@@ -2,6 +2,8 @@
 #include <sys/stat.h>
 #include <filesystem>
 #include <sstream>
+#include <iomanip>
+#include <unistd.h>
 
 Tintin_reporter::Tintin_reporter() {
 	create_log_file();
@@ -51,12 +53,18 @@ static std::string	get_compressed_filename() {
 }
 
 static bool	compress_log() {
-	auto size = std::__fs::filesystem::file_size(log_path);
+	auto size = std::filesystem::file_size(log_path);
 
 	if (size > MAX_LOG_SIZE) {
 		const auto compressed_filename = get_compressed_filename();
 		const auto system_string = "zip " + log_dir + compressed_filename + " " + log_path;
-		system(system_string.c_str());
+		
+		auto pid = fork();
+
+		if (pid == 0) {
+			system(system_string.c_str());
+			exit(0);
+		}
 		return true;
 	}
 	return false;

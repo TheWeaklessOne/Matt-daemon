@@ -17,9 +17,9 @@ static const std::string	lock_path = lock_dir + "matt_daemon.lock";
 
 class Daemon {
 private:
-	int		_lock_fd;
+	int		_lock_fd = 0;
 	bool	_remove_lock = false;
-	int		_socket;
+	int		_socket = 0;
 	int		_listeners_count = 0;
 	
 public:
@@ -28,7 +28,7 @@ public:
 	Daemon(const Daemon& other) = delete;
 	void operator=(const Daemon&) = delete;
 
-	void	loop();
+	[[noreturn]] void	loop();
 	void	init_lock_file();
 };
 
