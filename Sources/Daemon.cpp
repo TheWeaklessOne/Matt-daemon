@@ -11,14 +11,6 @@
 #include "Daemon.hpp"
 #include "Tintin_reporter.hpp"
 
-static void	ft_signal(int sig_no) {
-	std::string sig_name = "sig" + std::string(sys_siglist[sig_no]);
-	std::transform(sig_name.begin(), sig_name.end(), sig_name.begin(), ::toupper);
-
-	LOG("Catch a signal: " + sig_name, SIGNAL);
-	ft_crash();
-}
-
 Daemon::Daemon() {
 	LOG("Matt_daemon started at PID: [" + std::to_string(getpid()) + ']');
 
@@ -26,7 +18,16 @@ Daemon::Daemon() {
 		signal(i, ft_signal);
 }
 
+Daemon& Daemon::instance() {
+	static Daemon daemon;
+	
+	return daemon;
+}
+
 Daemon::~Daemon() {
+	if (_is_children_process)
+		return;
+		
 	if (_lock_fd != -1)
 		close(_lock_fd);
 
@@ -127,4 +128,8 @@ static int	listen_to_socket() {
 			close(fd);
 		}
 	}
+}
+
+void	Daemon::set_is_children_process(bool set) {
+	_is_children_process = set;
 }

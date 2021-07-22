@@ -1,5 +1,7 @@
 #include <algorithm>
 #include <unistd.h>
+#include <csignal>
+#include <sys/wait.h>
 
 #include "Daemon.hpp"
 #include "Tintin_reporter.hpp"
@@ -13,7 +15,7 @@ void	check_user_input(const std::string& input) {
 
 	if (capitalized == "QUIT") {
 		LOG("Exit by \"QUIT\" command", USER_ACTION);
-		ft_crash();
+		exit(EXIT_FAILURE);
 	} else if (first_word == "SYSTEM") {
 		std::string execute_string = input.substr(7);
 
@@ -21,10 +23,14 @@ void	check_user_input(const std::string& input) {
 		
 		auto pid = fork();
 
+		signal(SIGCHLD, SIG_IGN);
 		if (pid == 0) {
+			Daemon::instance().set_is_children_process(true);
 			system(execute_string.c_str());
 			exit(0);
 		}
+		waitpid(pid, NULL, 0);
+		signal(SIGCHLD, ft_signal);
 	} else if (capitalized == "CLEAR") {
 		Tintin_reporter::instance().clear_log();
 		LOG("Log file was cleared", USER_ACTION);

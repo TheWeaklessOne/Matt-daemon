@@ -6,9 +6,8 @@
 #include <mutex>
 
 #define LOG Tintin_reporter::instance().log
-#define MAX_LOG_SIZE 1024
+#define MAX_LOG_SIZE 50240
 
-void		ft_crash();
 void		ft_crash(const std::string& message);
 bool		is_file_exists(const std::string& message);
 

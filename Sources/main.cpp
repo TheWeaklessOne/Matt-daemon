@@ -1,11 +1,19 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <csetjmp>
+#include <algorithm>
+#include <csignal>
 
 #include "Daemon.hpp"
 #include "Tintin_reporter.hpp"
 
-static jmp_buf	env;
+void	ft_signal(int sig_no) {
+	std::string sig_name = "sig" + std::string(sys_siglist[sig_no]);
+	std::transform(sig_name.begin(), sig_name.end(), sig_name.begin(), ::toupper);
+
+	LOG("Catch a signal: " + sig_name, SIGNAL);
+	exit(EXIT_SUCCESS);
+}
 
 bool		is_file_exists(const std::string& path) {
 	static struct stat buffer;
@@ -13,13 +21,9 @@ bool		is_file_exists(const std::string& path) {
 	return (stat(path.c_str(), &buffer) == 0);
 }
 
-void		ft_crash() {
-	longjmp(env, EXIT_FAILURE);
-}
-
 void		ft_crash(const std::string& message) {
 	LOG(message, ERROR);
-	longjmp(env, EXIT_FAILURE);
+	exit(1);
 }
 
 static void	daemonize() {
@@ -53,19 +57,13 @@ int	main() {
 		exit(EXIT_FAILURE);
 	}
 
-	if (is_file_exists(lock_path)) {
+	if (is_file_exists(lock_path))
 		std::cerr << "The program cannot be run in more than one instance!" << std::endl;
-		exit(EXIT_FAILURE);
-	}
 
 	daemonize();
 
-	Daemon daemon;
-	int code = setjmp(env);
-	if (code == 0) {
-		daemon.init_lock_file();
-		daemon.loop();
-	} else {
-		return (code);
-	}
+	Daemon::instance().init_lock_file();
+	Daemon::instance().loop();
+
+	return (0);
 }
