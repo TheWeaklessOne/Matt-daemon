@@ -51,7 +51,7 @@ static void	daemonize() {
 	close(STDERR_FILENO);
 }
 
-int	main() {
+int	main(int argc, char *argv[]) {
 	if (geteuid() != 0) {
 		std::cerr << "Program is have to be run as root!" << std::endl;
 		exit(EXIT_FAILURE);
@@ -60,9 +60,34 @@ int	main() {
 	if (is_file_exists(lock_path))
 		std::cerr << "The program cannot be run in more than one instance!" << std::endl;
 
+	int	opt = 0;
+	int	port = PORT;
+	while ((opt = getopt(argc, argv, ":p:")) != - 1) {
+		switch(opt) {
+			case 'p':
+				try {
+					port = std::stoi(optarg);;
+
+					if (port <= 0 || port >= 0xFFFF) {
+						std::cerr << "port number is have to be between 1 and 65536" << std::endl;
+						exit(EXIT_FAILURE);
+					}
+				}
+				catch (...) {
+					std::cerr << "Can't convert to number - \"" << optarg << '"' << std::endl;
+					exit(EXIT_FAILURE);
+				}
+				break;
+			case ':':
+				std::cerr << "option -p is have to be followed by parameter" << std::endl;
+				exit(EXIT_FAILURE);
+		}
+	}
+
 	daemonize();
 
 	Daemon::instance().init_lock_file();
+	Daemon::instance().set_port(port);
 	Daemon::instance().loop();
 
 	return (0);

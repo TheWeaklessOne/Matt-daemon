@@ -20,14 +20,14 @@ Daemon::Daemon() {
 
 Daemon& Daemon::instance() {
 	static Daemon daemon;
-	
+
 	return daemon;
 }
 
 Daemon::~Daemon() {
 	if (_is_children_process)
 		return;
-		
+
 	if (_lock_fd != -1)
 		close(_lock_fd);
 
@@ -53,7 +53,7 @@ void		Daemon::init_lock_file() {
 		ft_crash("Can't open|create lock file at " + lock_path + ".\n\tError: " + strerror(errno));
 
 	if (flock(_lock_fd, LOCK_EX | LOCK_NB) == -1)
-		ft_crash("Lock file at " + lock_path + " is alredy locked");
+		ft_crash("Lock file at " + lock_path + " is already locked");
 
 	_remove_lock = true;
 }
@@ -82,8 +82,8 @@ static void	start_connection(int fd, int* _listeners_count) {
 	}
 }
 
-static int	listen_to_socket() {
-	auto _socket = socket(AF_INET, SOCK_STREAM, 0);
+void	Daemon::listen_to_socket() {
+	_socket = socket(AF_INET, SOCK_STREAM, 0);
 
 	int enable = 1;
 	if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
@@ -92,22 +92,20 @@ static int	listen_to_socket() {
 	sockaddr_in _sockaddr;
 	_sockaddr.sin_addr.s_addr = htonl(INADDR_ANY);
 	_sockaddr.sin_family = AF_INET;
-	_sockaddr.sin_port = htons(PORT);
+	_sockaddr.sin_port = htons(_port);
 
 	if (::bind(_socket, (sockaddr*)&_sockaddr, sizeof(_sockaddr)) == -1)
 		ft_crash(std::string("Bind failure") + ".\n\tError: " + strerror(errno));
 
 	if (listen(_socket, MAX_LISTENERS_COUNT) == -1)
 		ft_crash(std::string("Listen to socket error") + ".\n\tError: " + strerror(errno));
-
-	return _socket;
 }
 
 [[noreturn]] void Daemon::loop() {
 	sockaddr_in	addr;
 	int			fd;
 
-	_socket = listen_to_socket();
+	listen_to_socket();
 
 	socklen_t lenght = sizeof(addr);
 	while (true) {
@@ -121,8 +119,14 @@ static int	listen_to_socket() {
 
 			++_listeners_count;
 
-			auto thread = std::thread(start_connection, fd, &_listeners_count);
-			thread.detach();
+			try {
+				auto thread = std::thread(start_connection, fd, &_listeners_count);
+				thread.detach();
+			}
+			catch (...) {
+				LOG("Error on creating new connection", ERROR);
+			}
+
 		} else {
 			LOG("User tried to connect when maximum user count was reached");
 			close(fd);
@@ -132,4 +136,9 @@ static int	listen_to_socket() {
 
 void	Daemon::set_is_children_process(bool set) {
 	_is_children_process = set;
+}
+
+void	Daemon::set_port(int set) {
+	_port = set;
+	LOG("Daemon port was set to " + std::to_string(set));
 }

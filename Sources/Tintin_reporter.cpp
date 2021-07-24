@@ -42,7 +42,7 @@ Tintin_reporter::~Tintin_reporter() {
 
 Tintin_reporter& Tintin_reporter::instance() {
 	static Tintin_reporter reporter;
-	
+
 	return reporter;
 }
 
@@ -56,12 +56,15 @@ static std::string	get_compressed_filename() {
 }
 
 static bool	compress_log() {
-	auto size = std::filesystem::file_size(log_path);
+	static struct stat stat_buf;
+
+	int stat_value = stat(log_path.c_str(), &stat_buf);
+	auto size = stat_value == 0 ? stat_buf.st_size : 0;
 
 	if (size > MAX_LOG_SIZE) {
 		const auto compressed_filename = get_compressed_filename();
-		const auto system_string = "zip " + log_dir + compressed_filename + " " + log_path;
-		
+		const auto system_string = "zip -j " + log_dir + compressed_filename + " " + log_path;
+
 		auto pid = fork();
 
 		signal(SIGCHLD, SIG_IGN);
@@ -105,7 +108,10 @@ void	Tintin_reporter::log(const std::string& message, message_type type) {
 			_output << "[ID: " << std::this_thread::get_id() << "] ";
 		}
 
-		_output << message << std::endl;
+		if (message.empty()) {
+			_output << "(empty input)" << std::endl;
+		} else
+			_output << message << std::endl;
 	}
 	catch (const std::ofstream::failure& e) {
 		exit(EXIT_FAILURE);

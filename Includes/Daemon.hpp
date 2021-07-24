@@ -22,12 +22,15 @@ private:
 	bool	_remove_lock = false;
 	int		_socket = 0;
 	int		_listeners_count = 0;
-	bool	_is_children_process = false; 
-	
+	int		_port = PORT;
+	bool	_is_children_process = false;
+
 	Daemon();
 	~Daemon();
 	Daemon(const Daemon& other) = delete;
 	void operator=(const Daemon&) = delete;
+
+	void	listen_to_socket();
 
 public:
 
@@ -36,6 +39,7 @@ public:
 	[[noreturn]] void	loop();
 	void	init_lock_file();
 	void	set_is_children_process(bool set);
+	void	set_port(int set);
 };
 
 #endif
